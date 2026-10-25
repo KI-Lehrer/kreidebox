@@ -1,27 +1,36 @@
 # Kreidebox
 
-Bildschirme für den Unterricht, eigenständig gebaut. Speichert alles auf dem eigenen Computer, ohne Konto und ohne Server.
+Bildschirme für den Unterricht: Timer, Zufallsname, Gruppen, Ampel und rund 20 weitere Werkzeuge für den Beamer. Gratis, ohne Konto und ohne Server. Alles bleibt im Browser.
 
-## Ausprobieren
+**Ausprobieren: https://ki-lehrer.github.io/kreidebox/**
 
-**Einfachste Art:** `dist/kreidebox.html` in Chrome oder Edge öffnen (Doppelklick).
+## Gut zu wissen
 
-Gut zu wissen:
-- Gespeichert wird im Browser **dieses Computers**. Ein anderer Computer oder ein anderer Browser sieht die Decks nicht. Mit **«Alles sichern»** im Dashboard entsteht eine Datei (z. B. in Google Drive ablegen); auf dem anderen Computer mit **«Importieren»** einlesen.
-- Für den Schulalltag die App später unter einer festen https-Adresse betreiben (z. B. Vercel). Per Doppelklick geöffnete Dateien behandeln manche Browser (v. a. Safari) als wechselnden Ort; dann können gespeicherte Daten «verschwinden».
+- Gespeichert wird im Browser **dieses Computers**. Ein anderer Computer oder Browser sieht die Decks nicht. Mit **«Alles sichern»** im Dashboard entsteht eine Datei (z. B. in Google Drive ablegen); auf dem anderen Computer mit **«Importieren»** einlesen.
+- Browser dürfen Website-Daten bei Platzmangel löschen. Darum regelmässig sichern. Chrome und Edge können die App installieren («App installieren»); das schützt die Daten besser.
+- Die gehostete Version funktioniert nach dem ersten Besuch auch ohne Internet.
+- **Ohne Internet von Anfang an:** `dist/kreidebox.html` herunterladen und öffnen. Diese Einzeldatei hat keinen Offline-Cache und keine Installation, und manche Browser (v. a. Safari) behandeln per Doppelklick geöffnete Dateien als wechselnden Ort, dann können gespeicherte Daten «verschwinden». Für den Schulalltag die gehostete Version nehmen.
+- Datenschutz: siehe [Datenschutzseite](https://ki-lehrer.github.io/kreidebox/dist/datenschutz.html).
 
 ## Entwickeln
 
-```
-node build.mjs                      # baut dist/kreidebox.html (braucht: npm i)
+```bash
+npm i
+node build.mjs                      # baut dist/ (index.html, kreidebox.html, sw.js, Manifest, Icons)
 python3 -m http.server -d src 8765  # Entwicklungsversion: http://localhost:8765
+npx playwright test                 # Tests gegen dist/ (Server startet selbst auf Port 8777)
 ```
+
+Veröffentlicht wird über GitHub Pages aus dem Branch `main` (Hauptordner). `dist/` ist eingecheckt: Nach jeder Änderung `node build.mjs` ausführen und `dist/` mit committen.
 
 | Ordner | Inhalt |
 | --- | --- |
-| `src/` | Quellcode: `app.js` (Router), `views/`, `widgets/`, `data/` (Speicher), `ui/`, `styles/` |
+| `index.html` | Startseite (Landing), verlinkt auf `dist/index.html` |
+| `src/` | Quellcode: `app.js` (Router), `views/`, `widgets/`, `data/` (Speicher), `ui/`, `styles/`, `icons/` |
 | `src/design.html` | Prüfseite des Design-Systems |
-| `replica/` | Planung: Recon, Architektur, Design, Feature-Liste, Build-Log (wird nie ausgeliefert) |
-| `dist/` | gebaute Einzeldatei |
+| `dist/` | gebaute App: `index.html` (gehostet, installierbar), `kreidebox.html` (Einzeldatei) |
+| `tests/` | Playwright-Tests |
 
-Lizenzen der Bestandteile: Schriften Atkinson Hyperlegible Next und Inter (SIL OFL, `src/fonts/`), Icons Lucide (ISC, `src/ui/LUCIDE-LICENSE.txt`). Töne sind selbst erzeugt. Nichts stammt vom Original.
+## Lizenzen
+
+Schriften Atkinson Hyperlegible Next und Inter (SIL OFL, `src/fonts/`), Icons Lucide (ISC), Töne selbst erzeugt. Für den Code selbst ist noch keine Lizenz festgelegt.
