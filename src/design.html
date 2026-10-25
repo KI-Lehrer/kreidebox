@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design-System – Prüfseite</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  /* page layout only */
+  .page { max-width: 1120px; margin: 0 auto; padding: var(--s-8) var(--s-5) var(--s-10); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-9); }
+  .grid > *, section > * { min-width: 0; }
+  .page > header h1 { font-size: var(--t-display-size); line-height: var(--t-display-line); }
+  .page > header p { color: var(--c-text-muted); margin-top: var(--s-2); max-width: 70ch; }
+  section { display: grid; gap: var(--s-5); }
+  section > h2 { font-size: var(--t-xl-size); line-height: var(--t-xl-line); padding-bottom: var(--s-2); border-bottom: 1px solid var(--c-border); }
+  .grid { display: grid; gap: var(--s-5); }
+  .cols-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .demo { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--r-lg); padding: var(--s-5); display: grid; gap: var(--s-4); align-content: start; }
+  .demo > h3 { font-size: var(--t-xs-size); text-transform: uppercase; letter-spacing: .06em; color: var(--c-text-muted); }
+  .wrap { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .sw { display: grid; gap: 6px; font-size: var(--t-xs-size); }
+  .sw b { display: block; height: 56px; border-radius: var(--r-md); border: 1px solid var(--c-border); }
+  .sw code { color: var(--c-text-muted); }
+  .stagebg { border-radius: var(--r-lg); padding: var(--s-9) var(--s-6) var(--s-6); background: linear-gradient(135deg, #b9d3e8, #e8d9c9); display: flex; flex-wrap: wrap; gap: var(--s-9) var(--s-7); align-items: flex-end; }
+  .stagebg.compact { padding: var(--s-6); }
+  @media (max-width: 600px) { .stagebg { flex-wrap: nowrap; overflow-x: auto; } }
+  .typerow { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); }
+  .demo > * { min-width: 0; }
+  .typerow code { width: 120px; flex: none; font-size: var(--t-xs-size); color: var(--c-text-muted); }
+  .print-row { display: flex; justify-content: flex-end; }
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Design-System</h1>
+    <p>Prüfseite für alle Bausteine aus <code>replica/design/components.md</code>. Farben sind Rollen; die Akzentfarbe ist ein neutraler Platzhalter, bis die eigene Marke steht. Wird nicht ausgeliefert.</p>
+  </header>
+
+  <section aria-labelledby="h-colors">
+    <h2 id="h-colors">Farben</h2>
+    <div class="grid cols-3" id="swatches"></div>
+  </section>
+
+  <section aria-labelledby="h-type">
+    <h2 id="h-type">Schrift</h2>
+    <div class="demo">
+      <div class="typerow"><code>display 40/700</code><span style="font-size:var(--t-display-size);font-weight:700">Guten Morgen, 6b</span></div>
+      <div class="typerow"><code>xl 28/700</code><span style="font-size:var(--t-xl-size);font-weight:700">Alle Decks</span></div>
+      <div class="typerow"><code>lg 20/700</code><span style="font-size:var(--t-lg-size);font-weight:700">Timer</span></div>
+      <div class="typerow"><code>base 16/400</code><span>Gezogene Namen werden bis zum Ende der Runde nicht wiederholt.</span></div>
+      <div class="typerow"><code>sm 14/400</code><span style="font-size:var(--t-sm-size)">Gilt für neue Timer.</span></div>
+      <div class="typerow"><code>xs 12/600</code><span style="font-size:var(--t-xs-size);font-weight:600">Shift P</span></div>
+      <div class="typerow"><code>Bühne hero</code><span class="tnum" style="font-size:clamp(48px,12vw,96px);font-weight:700;line-height:1">11:11 · 08:59</span></div>
+      <p class="field__hint">Atkinson Hyperlegible Next (SIL OFL). Grosse Ziffern in Inter (SIL OFL): feste Breiten, damit Timer nicht springen, und eine Null ohne Schrägstrich. Umlaute und «Anführungszeichen» vorhanden.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-buttons">
+    <h2 id="h-buttons">Knöpfe</h2>
+    <div class="grid cols-2">
+      <div class="demo"><h3>Varianten</h3>
+        <div class="wrap">
+          <button class="btn btn--primary">Neues Deck</button>
+          <button class="btn btn--secondary">Abbrechen</button>
+          <button class="btn btn--ghost">Mehr anzeigen</button>
+          <button class="btn btn--danger">Endgültig löschen</button>
+        </div>
+      </div>
+      <div class="demo"><h3>Grössen und Zustände</h3>
+        <div class="wrap">
+          <button class="btn btn--primary btn--sm">Klein</button>
+          <button class="btn btn--primary">Mittel</button>
+          <button class="btn btn--primary btn--lg">Gross</button>
+          <button class="btn btn--primary" disabled>Deaktiviert</button>
+          <button class="btn btn--primary" aria-busy="true"><span class="spinner" aria-hidden="true"></span>Wird gesichert …</button>
+        </div>
+      </div>
+      <div class="demo"><h3>Icon-Knöpfe mit Namen und Tooltip</h3>
+        <div class="wrap" id="iconbtns"></div>
+      </div>
+      <div class="demo"><h3>Bildschirm-Navigation</h3>
+        <div class="wrap" id="snav"></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-forms">
+    <h2 id="h-forms">Formular-Elemente</h2>
+    <div class="grid cols-3">
+      <div class="demo"><h3>Schalter</h3>
+        <button class="switch" role="switch" aria-checked="true" data-toggle><span class="switch__track"></span>Ton bei Ablauf</button>
+        <button class="switch" role="switch" aria-checked="false" data-toggle><span class="switch__track"></span>Zeit im Browser-Tab zeigen</button>
+        <button class="switch" role="switch" aria-checked="false" disabled><span class="switch__track"></span>Deaktiviert</button>
+      </div>
+      <div class="demo"><h3>Slider</h3>
+        <div class="field">
+          <label class="field__label" for="sens">Empfindlichkeit</label>
+          <div class="slider-value" id="sens-v">80 %</div>
+          <input class="slider" id="sens" type="range" min="0" max="100" value="80" aria-valuetext="80 %">
+        </div>
+        <div class="field">
+          <label class="field__label" for="smooth">Glättung</label>
+          <input class="slider" id="smooth" type="range" min="0" max="4" step="1" value="1" aria-valuetext="1 Sekunde">
+          <div class="slider-marks" aria-hidden="true"><span>sofort</span><span>mittel</span><span>ruhig</span></div>
+        </div>
+      </div>
+      <div class="demo"><h3>Stepper, Radio, Checkbox</h3>
+        <div class="field"><span class="field__label" id="rep-l">Wiederholen</span>
+          <div class="stepper" id="stepper"></div></div>
+        <fieldset style="border:0;padding:0;margin:0;display:grid;gap:var(--s-2)">
+          <legend class="field__label" style="margin-bottom:var(--s-2)">Rot färben ab</legend>
+          <label class="check"><input type="radio" name="red" checked> den letzten <span class="input-unit"><input class="input" value="25" inputmode="numeric" aria-label="Prozent"><span>%</span></span></label>
+          <label class="check"><input type="radio" name="red"> den letzten <span class="input-unit"><input class="input" value="10" inputmode="numeric" aria-label="Sekunden"><span>Sek.</span></span></label>
+        </fieldset>
+        <label class="check"><input type="checkbox"> Dieses Fenster nicht mehr zeigen</label>
+      </div>
+      <div class="demo"><h3>Textfelder</h3>
+        <div class="field"><label class="field__label" for="tf1">Name des Decks</label><input class="input" id="tf1" placeholder="z. B. Montag 6b"></div>
+        <div class="field"><label class="field__label" for="tf2">Titel</label><input class="input" id="tf2" value="" aria-invalid="true" aria-describedby="tf2e"><span class="field__error" id="tf2e">Bitte einen Titel eingeben.</span></div>
+        <div class="field"><label class="field__label" for="tf3">Gesperrt</label><input class="input" id="tf3" value="Vorlage" disabled></div>
+      </div>
+      <div class="demo"><h3>Auswahl mit Vorhören</h3>
+        <div class="field"><label class="field__label" for="snd">Ton</label>
+          <div class="row"><select class="select" id="snd"><option>Gong</option><option>Glocke</option><option>Klangschale</option><option>Kein Ton</option></select><span id="play"></span></div>
+        </div>
+      </div>
+      <div class="demo"><h3>Namen einfügen</h3>
+        <div class="field"><label class="field__label" for="names">Namensliste</label>
+          <textarea class="textarea" id="names" placeholder="Ein Name pro Zeile …"></textarea>
+          <span class="field__hint">Leere Zeilen werden ignoriert.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-panel">
+    <h2 id="h-panel">Einstellungs-Panel, Tabs, Menü, Hinweise</h2>
+    <div class="grid cols-2">
+      <aside class="panel" role="dialog" aria-modal="false" aria-labelledby="p-title" style="border-radius:var(--r-lg);overflow:hidden">
+        <div class="panel__head"><span id="p-icon"></span><h2 id="p-title">Zufallsgenerator</h2><span id="p-close"></span></div>
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" id="t1" aria-controls="tp1">Liste</button>
+          <button class="tab" role="tab" aria-selected="false" id="t2" aria-controls="tp2" tabindex="-1">Einstellungen</button>
+        </div>
+        <div class="panel__body" role="tabpanel" id="tp1" aria-labelledby="t1">
+          <div class="panel__section"><h3>Darstellung</h3>
+            <div class="choices" role="radiogroup" aria-label="Darstellung">
+              <button class="choice" role="radio" aria-checked="true" id="ch1"><span>Ein Name</span></button>
+              <button class="choice" role="radio" aria-checked="false" id="ch2"><span>Glücksrad</span></button>
+            </div>
+          </div>
+          <div class="panel__section">
+            <button class="switch" role="switch" aria-checked="true" data-toggle><span class="switch__track"></span>Gezogene merken, bis alle dran waren</button>
+            <button class="switch" role="switch" aria-checked="true" data-toggle><span class="switch__track"></span>Ton</button>
+          </div>
+          <div class="panel__section"><h3 id="th-l">Farbthema</h3><div class="swatches" role="radiogroup" aria-labelledby="th-l" id="themes"></div></div>
+        </div>
+        <div class="panel__foot"><a href="#">Hilfe zu diesem Widget</a></div>
+      </aside>
+      <div class="grid" style="align-content:start">
+        <div class="demo"><h3>Widget-Menü</h3><ul class="menu" role="menu" aria-label="Widget-Aktionen" id="menu"></ul></div>
+        <div class="demo"><h3>Hinweise</h3>
+          <div class="callout callout--info" role="status" id="c1"></div>
+          <div class="callout callout--warning" role="status" id="c2"></div>
+          <div class="callout callout--error" role="alert" id="c3"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-stage">
+    <h2 id="h-stage">Bühne: Widget-Rahmen, Themen, Leiste</h2>
+    <div class="stagebg" id="frames"></div>
+    <div class="stagebg compact" id="themed"></div>
+    <div class="demo" style="justify-items:center;background:var(--c-surface-sunken)"><h3 style="justify-self:start">Widget-Leiste</h3><div class="wbar" role="toolbar" aria-label="Widgets" id="wbar"></div></div>
+  </section>
+
+  <section aria-labelledby="h-dash">
+    <h2 id="h-dash">Dashboard</h2>
+    <div class="storage" id="st1"></div>
+    <div class="storage storage--stale" id="st2"></div>
+    <div class="grid cols-3" id="decks"></div>
+    <div class="grid cols-2">
+      <div class="demo"><div class="empty" id="empty"></div></div>
+      <div class="demo" style="justify-items:center;align-content:center;gap:var(--s-5)">
+        <div class="toast" role="status" id="toast"></div>
+        <button class="btn btn--secondary" id="open-modal">Bestätigungsfenster öffnen</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="print-row no-print"><button class="btn btn--ghost printbtn" id="print"></button></div>
+</main>
+
+<dialog class="modal" id="modal" aria-labelledby="m-title">
+  <div class="modal__body"><h2 id="m-title">Deck «Montag 6b» löschen?</h2><p>Es liegt danach 30 Tage im Papierkorb und lässt sich dort wiederherstellen.</p></div>
+  <div class="modal__actions"><button class="btn btn--secondary" value="cancel" id="m-cancel">Abbrechen</button><button class="btn btn--danger" id="m-ok">Löschen</button></div>
+</dialog>
+
+<script type="module">
+import { icon } from './ui/icons.js';
+const $ = (s) => document.querySelector(s);
+const tokens = getComputedStyle(document.documentElement);
+
+// colours
+const roles = ['bg','surface','surface-sunken','border','border-input','text','text-muted','accent','accent-hover','accent-soft','focus','danger','success','warning-bg','warning-text','info-bg','info-text','error-bg','error-text','signal-red','signal-yellow','signal-green','timer-warn'];
+$('#swatches').innerHTML = roles.map(r => `<div class="sw"><b style="background:var(--c-${r})"></b><span>${r}</span><code>${tokens.getPropertyValue('--c-'+r).trim()}</code></div>`).join('');
+
+// icon buttons
+const ib = (name, label, cls = '', kbd = '') => `<span class="tip"><button class="iconbtn ${cls}" aria-label="${label}">${icon(name)}</button><span role="tooltip">${label}${kbd ? ' ('+kbd+')' : ''}</span></span>`;
+$('#iconbtns').innerHTML = ib('house','Zur Übersicht','iconbtn--surface') + ib('maximize','Vollbild','iconbtn--surface','F') + ib('ellipsis-vertical','Optionen','iconbtn--surface') + ib('settings','Einstellungen','', 'S') + ib('trash-2','Entfernen','iconbtn--danger','Entf') + ib('volume-2','Ton ein','', '') + `<button class="iconbtn" aria-label="Deaktiviert" disabled>${icon('copy')}</button>`;
+$('#iconbtns .tip:nth-child(6) button').setAttribute('aria-pressed','true');
+$('#snav').innerHTML = `<nav class="snav" aria-label="Bildschirme"><button class="iconbtn iconbtn--sm" aria-label="Vorheriger Bildschirm" disabled>${icon('chevron-left')}</button><output aria-live="polite">1 / 3</output><button class="iconbtn iconbtn--sm" aria-label="Nächster Bildschirm">${icon('chevron-right')}</button><button class="iconbtn iconbtn--sm" aria-label="Neuer Bildschirm (Ctrl+Enter)">${icon('plus')}</button></nav>`;
+
+// toggles
+document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-checked', b.getAttribute('aria-checked') !== 'true')));
+
+// sliders
+$('#sens').addEventListener('input', e => { const v = e.target.value + ' %'; $('#sens-v').textContent = v; e.target.setAttribute('aria-valuetext', v); });
+const sm = ['sofort','1 Sekunde','2 Sekunden','3 Sekunden','5 Sekunden'];
+$('#smooth').addEventListener('input', e => e.target.setAttribute('aria-valuetext', sm[e.target.value]));
+
+// stepper
+let rep = 0;
+$('#stepper').innerHTML = `<button class="iconbtn iconbtn--sm" aria-label="Weniger" id="st-">${icon('minus',{size:16})}</button><output role="spinbutton" aria-labelledby="rep-l" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" tabindex="0" id="st-v">0</output><button class="iconbtn iconbtn--sm" aria-label="Mehr" id="st+">${icon('plus',{size:16})}</button>`;
+const setRep = n => { rep = Math.max(0, Math.min(20, n)); $('#st-v').textContent = rep; $('#st-v').setAttribute('aria-valuenow', rep); $('#st-').disabled = rep === 0; };
+$('#st-').onclick = () => setRep(rep - 1); document.getElementById('st+').onclick = () => setRep(rep + 1);
+$('#st-v').addEventListener('keydown', e => { if (e.key === 'ArrowUp') setRep(rep + 1); if (e.key === 'ArrowDown') setRep(rep - 1); });
+setRep(0);
+$('#play').innerHTML = `<button class="iconbtn" aria-label="Ton abspielen">${icon('volume-2')}</button>`;
+
+// panel
+$('#p-icon').innerHTML = icon('shuffle', {size: 24});
+$('#p-close').innerHTML = `<button class="iconbtn" aria-label="Einstellungen schliessen (S)">${icon('x')}</button>`;
+const tabs = [...document.querySelectorAll('.tab')];
+tabs.forEach(t => t.addEventListener('click', () => tabs.forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; })));
+document.querySelector('.tabs').addEventListener('keydown', e => { if (!['ArrowLeft','ArrowRight'].includes(e.key)) return; const i = tabs.indexOf(document.activeElement); const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]; n.click(); n.focus(); });
+['#ch1','#ch2'].forEach(id => $(id).addEventListener('click', () => ['#ch1','#ch2'].forEach(o => $(o).setAttribute('aria-checked', o === id))));
+const themes = [['Standard','standard'],['Grau','sunken'],['Nacht','night'],['Minze','mint'],['Himmel','sky'],['Sonne','sun'],['Rose','rose'],['Flieder','lilac']];
+$('#themes').innerHTML = themes.map(([n,k],i) => `<button class="swatch" role="radio" aria-checked="${i===0}" aria-label="${n}" style="background:var(--c-w-${k}-bg)"><i style="background:var(--c-w-${k}-text)"></i><i style="background:var(--c-w-${k}-${k==='standard'||k==='night'?'accent':'text'});opacity:.6"></i></button>`).join('') + `<button class="swatch swatch--add" aria-label="Eigenes Farbthema">${icon('plus')}</button>`;
+$('#themes').addEventListener('click', e => { const s = e.target.closest('.swatch[role=radio]'); if (!s) return; $('#themes').querySelectorAll('[role=radio]').forEach(x => x.setAttribute('aria-checked', x === s)); });
+
+// menu
+const mi = (ic, t, k, cls='') => `<li role="none"><button class="menu__item ${cls}" role="menuitem">${icon(ic)}<span>${t}</span>${k ? `<span class="kbd">${k}</span>` : ''}</button></li>`;
+$('#menu').innerHTML = mi('settings','Einstellungen','S') + mi('copy','Duplizieren','Shift D') + mi('pin','An alle Bildschirme heften','Shift P') + mi('scan','Hervorheben','Shift S') + mi('lock','Fixieren','Shift L') + mi('layers','Nach vorne','Ctrl ↑') + '<li role="separator" class="menu__sep"></li>' + mi('trash-2','Entfernen','Entf','menu__item--danger');
+
+// callouts
+$('#c1').innerHTML = `${icon('info')}<div><strong>Gespeichert auf diesem Computer</strong>Alles bleibt in diesem Browser, auch nach dem Schliessen.</div>`;
+$('#c2').innerHTML = `${icon('triangle-alert')}<div><strong>Mikrofon nicht freigegeben</strong>Erlaube den Zugriff in den Browser-Einstellungen und lade die Seite neu.</div>`;
+$('#c3').innerHTML = `${icon('circle-alert')}<div><strong>Import fehlgeschlagen</strong>Die Datei ist keine gültige Sicherung.</div>`;
+
+// stage: frames
+const timer = (cls='', digits='10:00', warn=false) => `<div class="w w--${cls||'standard'} timer ${warn?'timer--warn':''}" role="group" aria-label="Timer, ${digits}"><div class="timer__ring"></div><div class="timer__digits">${digits}</div><button class="timer__btn" aria-label="Start">${icon('play',{size:22})}</button></div>`;
+const handles = '<span class="handle handle--nw"></span><span class="handle handle--ne"></span><span class="handle handle--sw"></span><span class="handle handle--se"></span>';
+const tb = `<div class="wtoolbar">${ib('trash-2','Entfernen','iconbtn--sm iconbtn--danger','Entf')}${ib('settings','Einstellungen','iconbtn--sm','S')}${ib('ellipsis-vertical','Mehr','iconbtn--sm')}</div>`;
+$('#frames').innerHTML =
+  `<div class="wf">${timer()}</div>` +
+  `<div class="wf wf--selected">${tb}${timer()}${handles}</div>` +
+  `<div class="wf">${timer('', '00:42', true)}<span class="badge" title="Fixiert">${icon('lock',{size:14,label:'Fixiert'})}</span></div>` +
+  `<div class="wf wf--grouped"><div class="w w--standard" style="display:grid;gap:4px"><strong style="font-size:28px">Stille</strong><span style="color:var(--w-text)">Arbeitssymbol</span></div><span class="badge">${icon('pin',{size:14,label:'An alle Bildschirme geheftet'})}</span></div>` +
+  `<div class="ampel" role="group" aria-label="Ampel: gelb"><button class="r" aria-pressed="false" aria-label="Rot"></button><button class="y" aria-pressed="true" aria-label="Gelb"></button><button class="g" aria-pressed="false" aria-label="Grün"></button></div>`;
+document.querySelector('.ampel').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; document.querySelectorAll('.ampel button').forEach(x => x.setAttribute('aria-pressed', x === b)); document.querySelector('.ampel').setAttribute('aria-label', 'Ampel: ' + b.getAttribute('aria-label').toLowerCase()); });
+$('#themed').innerHTML = themes.map(([n,k]) => `<div class="w w--${k}" style="min-width:150px"><div style="font-size:14px;font-weight:700;opacity:.8">${n}</div><div class="tnum" style="font-size:44px;font-weight:700;line-height:1.1">08:15</div></div>`).join('');
+
+// widget bar
+const wb = (ic, t, active=false) => `<button class="wbtn ${active?'wbtn--active':''}" aria-label="${t}${active?' (auf dem Bildschirm)':''}">${icon(ic,{size:26})}<span aria-hidden="true">${t}</span></button>`;
+$('#wbar').innerHTML = `<div class="wbar__tools"><button class="iconbtn" aria-label="Auswählen" aria-pressed="true">${icon('mouse-pointer-2',{size:16})}</button><button class="iconbtn" aria-label="Zeichnen über allem">${icon('pencil-line',{size:16})}</button></div>` +
+  wb('image','Hintergrund') + wb('chart-column','Umfrage') + wb('shuffle','Zufall', true) + wb('audio-lines','Lautstärke') + wb('type','Text') + wb('hand','Arbeitsform') + wb('traffic-cone','Ampel') + wb('list-checks','Tagesplan') + wb('hourglass','Timer', true) + wb('clock','Uhr') + wb('layout-grid','Mehr');
+
+// dashboard
+const ago = ['vor 5 Min.','gestern','vor 3 Tagen'];
+const decks = [['Montag 6b','linear-gradient(135deg,#cfe0f0,#f3e3cf)'],['Mathe: Brüche – Werkstatt mit sehr langem Namen','linear-gradient(135deg,#dcf3e5,#dceafb)'],['Archiv: Projektwoche','linear-gradient(135deg,#eee,#ddd)']];
+$('#decks').innerHTML = decks.map(([n,bg],i) => `<div class="deck ${i===2?'deck--archived':''}"><a href="#" style="display:contents;color:inherit;text-decoration:none"><div class="deck__thumb" style="background:${bg}" role="img" aria-label="Vorschau"></div></a><div class="deck__meta"><div><div class="deck__name">${n}</div><div class="deck__time">${ago[i]}${i===2?' · archiviert':''}</div></div><button class="iconbtn iconbtn--sm" aria-label="Optionen für Deck ${n}">${icon('ellipsis-vertical')}</button></div></div>`).join('');
+const st = (stale) => `<span class="storage__item">${icon('hard-drive')}<span><strong>Gespeichert auf diesem Computer</strong> · 12,4 MB</span></span><span class="storage__item">${icon(stale?'triangle-alert':'check')}<span>Letzte Sicherung: <strong>${stale?'vor 9 Tagen':'heute, 15:40'}</strong></span></span><button class="btn btn--${stale?'primary':'secondary'} btn--sm">Jetzt sichern</button>`;
+$('#st1').innerHTML = st(false); $('#st2').innerHTML = st(true);
+$('#empty').innerHTML = `${icon('users',{size:48})}<h3>Noch keine Namenslisten</h3><p>Lege eine Liste an und nutze sie im Zufallsgenerator und bei den Gruppen.</p><button class="btn btn--primary">${icon('plus',{size:18})}Neue Liste</button>`;
+$('#toast').innerHTML = `Widget entfernt <button class="btn btn--ghost btn--sm">Rückgängig</button>`;
+$('#open-modal').onclick = () => $('#modal').showModal();
+$('#m-cancel').onclick = $('#m-ok').onclick = () => $('#modal').close();
+$('#print').innerHTML = `${icon('printer',{size:16})}Als PDF drucken`;
+$('#print').onclick = () => window.print();
+</script>
+</body>
+</html>

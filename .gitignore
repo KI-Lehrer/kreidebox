@@ -1,0 +1,7 @@
+node_modules/
+test-results/
+playwright-report/
+.DS_Store
+.agents/
+# Planung und Recherche (enthält Bildschirmfotos und Notizen zum Original), nicht veröffentlichen
+replica/

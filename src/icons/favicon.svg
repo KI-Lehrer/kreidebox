@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kreidebox">
+  <rect width="512" height="512" rx="112" fill="#1F6B5E"/>
+  <path d="M146 150 H366 V362 H146 Z" fill="none" stroke="#F4F1E8" stroke-width="34" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M146 150 L190 108" fill="none" stroke="#F4F1E8" stroke-width="34" stroke-linecap="round"/>
+</svg>

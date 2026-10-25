@@ -1,0 +1,19 @@
+{
+  "name": "kreidebox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bildschirme für den Unterricht (Probelauf)",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "python3 -m http.server -d src 8765"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "esbuild": "^0.24.0"
+  },
+  "dependencies": {
+    "qrcode-generator": "^1.4.4"
+  }
+}

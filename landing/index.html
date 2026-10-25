@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bildschirme für den Unterricht. Gratis speichern, ohne Konto, nur auf deinem Computer.">
+<title>Kreidebox</title>
+<link rel="stylesheet" href="../src/styles/tokens.css">
+<link rel="stylesheet" href="../src/styles/base.css">
+<style>
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  header.hero { padding: 64px 0 40px; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; font-weight: 700; }
+  h2 { font-size: 1.5rem; margin-bottom: 12px; }
+  .lead { font-size: 1.2rem; margin: 16px 0 24px; color: var(--c-text-muted); max-width: 40ch; }
+  section { padding: 28px 0; }
+  .btn { display: inline-block; padding: 12px 20px; border-radius: 8px; background: var(--c-accent); color: var(--c-on-accent); text-decoration: none; font-weight: 600; }
+  .btn:hover { background: var(--c-accent-hover); }
+  ol, ul { padding-left: 1.2em; margin: 0; } li { margin: 6px 0; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 12px; padding: 16px; }
+  details { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 16px; margin: 8px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  footer { padding: 32px 0 48px; color: var(--c-text-muted); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <h1>Deine Unterrichtsbildschirme. Gespeichert, gratis, nur bei dir.</h1>
+    <p class="lead">Timer, Zufallsname, Gruppen, Ampel und mehr für den Beamer. Ohne Konto, ohne Cloud.</p>
+    <a class="btn" href="../dist/kreidebox.html">Kreidebox öffnen</a>
+  </header>
+
+  <section>
+    <h2>Das Problem</h2>
+    <p>Bei vielen Tafel-Tools kostet Speichern extra, und Teilen verlangt ein Konto. Dann baust du jeden Morgen deinen Bildschirm neu auf.</p>
+  </section>
+
+  <section>
+    <h2>So geht's</h2>
+    <ol>
+      <li>Deck anlegen, zum Beispiel für einen Schultag.</li>
+      <li>Widgets auf den Bildschirm legen und verschieben.</li>
+      <li>Am Beamer zeigen. Gespeichert wird automatisch.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Was du bekommst</h2>
+    <div class="grid">
+      <div class="card"><strong>Gratis speichern</strong><p>Alles liegt auf deinem Computer. Kein Abo.</p></div>
+      <div class="card"><strong>Als Datei teilen</strong><p>Ganze Decks oder einzelne Bildschirme, für andere Computer oder Kolleginnen.</p></div>
+      <div class="card"><strong>Namen bleiben bei dir</strong><p>Namenslisten verlassen deinen Browser nicht.</p></div>
+      <div class="card"><strong>26 Werkzeuge</strong><p>Timer, Zufall, Gruppen, Würfel, Umfrage, Zeichnen und mehr, dazu Vorlagen und Ordner.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Preis</h2>
+    <p>Gratis.</p>
+  </section>
+
+  <section>
+    <h2>Fragen</h2>
+    <details><summary>Wo liegen meine Daten?</summary><p>Im Speicher deines Browsers auf diesem Computer. Ein anderer Computer sieht sie nicht.</p></details>
+    <details><summary>Was, wenn der Browser sie löscht?</summary><p>Das kann bei Platzmangel passieren. Sichere regelmässig mit «Alles sichern», zum Beispiel in Google Drive.</p></details>
+    <details><summary>Geht es ohne Internet?</summary><p>Die Einzeldatei läuft ohne Internet. Eine installierbare Offline-Version (Service Worker) fehlt noch.</p></details>
+  </section>
+
+  <section><a class="btn" href="../dist/kreidebox.html">Kreidebox öffnen</a></section>
+  <footer>Kreidebox · Bildschirme für den Unterricht</footer>
+</main>
+</body>
+</html>
