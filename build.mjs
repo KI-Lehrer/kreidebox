@@ -18,8 +18,8 @@ const script = js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
 
 const html = readFileSync(join(src, 'index.html'), 'utf8')
   .replace(/\s*<link rel="stylesheet" href="[^"]+">/g, '')
-  .replace('</head>', `<style>\n${css}\n</style>\n</head>`)
-  .replace('<script type="module" src="app.js"></script>', `<script>\n${script}\n</script>`);
+  .replace('</head>', () => `<style>\n${css}\n</style>\n</head>`) // function form: "$`" in the code must not act as a pattern
+  .replace('<script type="module" src="app.js"></script>', () => `<script>\n${script}\n</script>`);
 
 mkdirSync('dist/icons', { recursive: true });
 // dist/kreidebox.html: Einzeldatei zum Doppelklicken (kein Manifest, kein Service Worker, weil file:// beides nicht kann).

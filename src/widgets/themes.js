@@ -49,10 +49,10 @@ export function themePicker(current, onPick, { transparent = false } = {}) {
     grid.append(h('button', { class: 'swatch swatch--add', type: 'button', 'aria-label': 'Eigenes Farbthema erstellen', title: 'Eigenes Farbthema erstellen',
       onClick: async () => { const t = await editTheme(null); if (t) pick('custom:' + t.id); } }, iconEl('plus', { size: 22 })));
     const own = cur.startsWith('custom:') ? cachedTheme(cur.slice(7)) : null;
-    wrap.replaceChildren(grid, own ? h('button', { class: 'btn btn--ghost btn--sm themepick__edit', type: 'button', onClick: async () => {
+    wrap.replaceChildren(...[grid, own ? h('button', { class: 'btn btn--ghost btn--sm themepick__edit', type: 'button', onClick: async () => {
       const r = await editTheme(own);
       if (r === 'deleted') pick('standard'); else if (r) { themesChanged(); onPick(cur); draw(); }
-    } }, iconEl('palette', { size: 16 }), `«${own.name}» bearbeiten`) : null);
+    } }, iconEl('palette', { size: 16 }), `«${own.name}» bearbeiten`) : null].filter(Boolean)); // replaceChildren(null) would print "null"
   }
 
   function swatch(key, label, bg, text, acc, isT) {

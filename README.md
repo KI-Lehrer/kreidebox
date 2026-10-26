@@ -33,4 +33,4 @@ Veröffentlicht wird über GitHub Pages aus dem Branch `main` (Hauptordner). `di
 
 ## Lizenzen
 
-Schriften Atkinson Hyperlegible Next und Inter (SIL OFL, `src/fonts/`), Icons Lucide (ISC), Töne selbst erzeugt. Für den Code selbst ist noch keine Lizenz festgelegt.
+Schriften Atkinson Hyperlegible Next, Inter, Andika, Edu SA Beginner und Playpen Sans (SIL OFL, `src/fonts/`), Icons Lucide (ISC), Töne selbst erzeugt. Für den Code selbst ist noch keine Lizenz festgelegt.
