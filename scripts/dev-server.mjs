@@ -12,7 +12,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 function route(path) {
   if (path.startsWith('/.well-known/oauth-authorization-server')) return 'api/well-known/authorization-server.js';
   if (path.startsWith('/.well-known/oauth-protected-resource')) return 'api/well-known/protected-resource.js';
-  if (path.startsWith('/api/auth/')) return 'api/auth/[...all].js';
+  if (path.startsWith('/api/auth/')) return 'api/auth.js';
   if (path === '/api/decks') return 'api/decks/index.js';
   if (path.startsWith('/api/decks/')) return 'api/decks/[id].js';
   if (/^\/api\/[a-z-]+$/.test(path)) return `api${path.slice(4)}.js`;
