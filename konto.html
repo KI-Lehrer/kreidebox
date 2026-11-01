@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Konto · Kreidebox</title>
+<link rel="icon" href="dist/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="src/styles/tokens.css">
+<link rel="stylesheet" href="src/styles/base.css">
+<link rel="stylesheet" href="src/styles/components.css">
+<style>
+  main { max-width: 440px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 8px 0 16px; }
+  .tabs { display: flex; gap: 8px; margin: 16px 0; }
+  .tabs button[aria-selected="true"] { background: var(--c-accent); color: var(--c-on-accent); }
+  form { display: grid; gap: 14px; }
+  .msg { padding: 10px 14px; border-radius: 8px; }
+  .msg--err { background: var(--c-error-bg); color: var(--c-error-text); }
+  .msg--ok { background: var(--c-info-bg); color: var(--c-info-text); }
+  .small { color: var(--c-text-muted); font-size: .9rem; }
+  a { color: var(--c-accent); }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="./">← Kreidebox</a></p>
+  <h1 id="title">Konto</h1>
+  <div id="msg" role="status" aria-live="polite"></div>
+  <div id="view"><p>Wird geladen …</p></div>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const view = $('view'), msg = $('msg'), title = $('title');
+  const say = (t, kind = 'ok') => { msg.className = 'msg msg--' + (kind === 'err' ? 'err' : 'ok'); msg.textContent = t; };
+  const clear = () => { msg.className = ''; msg.textContent = ''; };
+  const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; };
+  const api = async (path, body) => {
+    // redirect: 'manual': bei der Anmeldung für Claude/ChatGPT antwortet der Server mit einer Weiterleitung zur KI. Die darf der Browser
+    // hier nicht selbst verfolgen (fremde Adresse); wir gehen danach selbst zur Freigabe zurück (siehe oauthContinue).
+    const r = await fetch('/api/auth' + path, { method: body ? 'POST' : 'GET', redirect: 'manual', headers: body ? { 'content-type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined, credentials: 'same-origin' });
+    if (r.type === 'opaqueredirect') return { ok: true, status: 302, data: null, redirected: true };
+    let data = null; try { data = await r.json(); } catch {}
+    return { ok: r.ok, status: r.status, data };
+  };
+  const field = (id, label, type, extra = '') => `<div class="field"><label class="field__label" for="${id}">${label}</label><input class="input" id="${id}" name="${id}" type="${type}" required ${extra}></div>`;
+  const safeNext = () => { const n = params.get('next'); return n && n.startsWith('/') && !n.startsWith('//') ? n : null; };
+  // Anmeldung für Claude/ChatGPT: die Adresse enthält die Angaben der KI (client_id usw.). Nach dem Login zurück zur Freigabe.
+  const oauthContinue = () => {
+    if (!params.get('client_id') || !params.get('response_type')) return false;
+    location.href = '/api/auth/mcp/authorize' + location.search;
+    return true;
+  };
+  const errText = (r) => {
+    const c = r.data && r.data.code, m = r.data && r.data.message;
+    if (r.status === 429) return 'Zu viele Versuche. Warte eine Minute und versuche es nochmals.';
+    if (c === 'INVALID_EMAIL_OR_PASSWORD') return 'E-Mail oder Passwort stimmt nicht.';
+    if (c === 'USER_ALREADY_EXISTS' || c === 'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL') return 'Mit dieser E-Mail gibt es schon ein Konto. Melde dich an.';
+    if (c === 'PASSWORD_TOO_SHORT') return 'Das Passwort ist zu kurz (mindestens 10 Zeichen).';
+    return m || 'Das hat nicht geklappt. Versuche es nochmals.';
+  };
+
+  function showAuth(mode) {
+    clear();
+    title.textContent = mode === 'up' ? 'Konto erstellen' : 'Anmelden';
+    const f = el(`<form novalidate>
+      ${mode === 'up' ? field('name', 'Name (Vorname genügt)', 'text', 'autocomplete="given-name" maxlength="60"') : ''}
+      ${field('email', 'E-Mail', 'email', 'autocomplete="email" inputmode="email"')}
+      ${field('password', mode === 'up' ? 'Passwort (mindestens 10 Zeichen)' : 'Passwort', 'password', `autocomplete="${mode === 'up' ? 'new-password' : 'current-password'}" minlength="${mode === 'up' ? 10 : 1}"`)}
+      <button class="btn btn--primary btn--lg" type="submit">${mode === 'up' ? 'Konto erstellen' : 'Anmelden'}</button>
+      <p class="small">${mode === 'up' ? 'Du hast schon ein Konto? <a href="#" id="sw">Anmelden</a>' : 'Neu hier? <a href="#" id="sw">Konto erstellen</a> · <a href="#" id="fg">Passwort vergessen</a>'}</p>
+      <p class="small">Mit einem Konto kannst du deine Bildschirme auf mehreren Geräten nutzen und sie von Claude oder ChatGPT bearbeiten lassen. Namen von Kindern bleiben auf deinem Gerät.</p>
+    </form>`);
+    view.replaceChildren(f);
+    f.querySelector('#sw').addEventListener('click', (e) => { e.preventDefault(); showAuth(mode === 'up' ? 'in' : 'up'); });
+    const fg = f.querySelector('#fg'); if (fg) fg.addEventListener('click', (e) => { e.preventDefault(); showForgot(); });
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault(); clear();
+      const email = f.email.value.trim(), password = f.password.value;
+      if (!email || !password) { say('Bitte E-Mail und Passwort eingeben.', 'err'); return; }
+      if (mode === 'up' && password.length < 10) { say('Das Passwort ist zu kurz (mindestens 10 Zeichen).', 'err'); return; }
+      const btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+      const r = mode === 'up' ? await api('/sign-up/email', { email, password, name: (f.name.value.trim() || email.split('@')[0]) }) : await api('/sign-in/email', { email, password });
+      btn.disabled = false;
+      if (!r.ok) { say(errText(r), 'err'); return; }
+      if (oauthContinue()) return;
+      const n = safeNext(); if (n) { location.href = n; return; }
+      showAccount();
+    });
+    f.querySelector('input').focus();
+  }
+
+  function showForgot() {
+    clear(); title.textContent = 'Passwort vergessen';
+    const f = el(`<form novalidate>${field('email', 'E-Mail', 'email', 'autocomplete="email"')}<button class="btn btn--primary btn--lg" type="submit">Link senden</button><p class="small"><a href="#" id="bk">Zurück</a></p></form>`);
+    view.replaceChildren(f);
+    f.querySelector('#bk').addEventListener('click', (e) => { e.preventDefault(); showAuth('in'); });
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await api('/request-password-reset', { email: f.email.value.trim(), redirectTo: location.origin + '/konto.html?reset=1' });
+      say('Wenn es zu dieser E-Mail ein Konto gibt, ist ein Link unterwegs. Er gilt eine Stunde.');
+    });
+  }
+
+  function showReset(token) {
+    clear(); title.textContent = 'Neues Passwort';
+    const f = el(`<form novalidate>${field('password', 'Neues Passwort (mindestens 10 Zeichen)', 'password', 'autocomplete="new-password" minlength="10"')}<button class="btn btn--primary btn--lg" type="submit">Passwort speichern</button></form>`);
+    view.replaceChildren(f);
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const r = await api('/reset-password', { newPassword: f.password.value, token });
+      if (!r.ok) { say('Der Link ist abgelaufen oder ungültig. Fordere einen neuen an.', 'err'); return; }
+      showAuth('in'); say('Passwort gespeichert. Du kannst dich jetzt anmelden.');
+    });
+  }
+
+  async function showAccount() {
+    clear();
+    const s = await api('/get-session');
+    if (!s.ok || !s.data || !s.data.user) { showAuth('in'); return; }
+    title.textContent = 'Dein Konto';
+    const v = el(`<div><p>Angemeldet als <strong id="em"></strong>.</p>
+      <p class="small">Deine Bildschirme werden mit diesem Konto abgeglichen, wenn du Kreidebox öffnest. Namen von Kindern bleiben auf deinem Gerät.</p>
+      <p><a class="btn btn--primary btn--lg" href="dist/index.html">Kreidebox öffnen</a></p>
+      <p><button class="btn btn--secondary" type="button" id="out">Abmelden</button></p>
+      <details><summary>Konto löschen</summary>
+        <p class="small">Löscht dein Konto und alle Bildschirme auf dem Server. Auf deinen Geräten bleiben die Bildschirme erhalten. Das lässt sich nicht rückgängig machen.</p>
+        <form id="del" novalidate>${field('dpw', 'Passwort zur Bestätigung', 'password', 'autocomplete="current-password"')}<button class="btn btn--danger" type="submit">Konto endgültig löschen</button></form></details></div>`);
+    v.querySelector('#em').textContent = s.data.user.email;
+    view.replaceChildren(v);
+    v.querySelector('#del').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const r = await api('/delete-user', { password: e.target.dpw.value });
+      if (!r.ok) { say(errText(r), 'err'); return; }
+      showAuth('in'); say('Dein Konto und die Bildschirme auf dem Server sind gelöscht.');
+    });
+    v.querySelector('#out').addEventListener('click', async () => { await api('/sign-out', {}); showAuth('in'); say('Abgemeldet.'); });
+  }
+
+  const resetToken = params.get('token');
+  if (params.get('reset') && resetToken) showReset(resetToken);
+  else if (params.get('error') === 'INVALID_TOKEN') { showForgot(); say('Der Link ist abgelaufen. Fordere einen neuen an.', 'err'); }
+  else showAccount();
+})();
+</script>
+</body>
+</html>

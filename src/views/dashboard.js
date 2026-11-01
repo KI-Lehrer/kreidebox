@@ -7,6 +7,7 @@ import { listFolders, createFolder, renameFolder, deleteFolder, moveDeckToFolder
 import { topNav, themeToggle } from './nav.js';
 import { thumbOf } from './templates.js';
 import { pasteAiDialog } from './ai.js';
+import { getSyncStatus } from '../data/sync.js';
 
 const BACKUP_WARN_DAYS = 7;
 
@@ -14,7 +15,10 @@ export async function renderDashboard(root) {
   document.title = 'Meine Bildschirme · Kreidebox';
   const page = h('main', { class: 'dash', id: 'main' });
   root.append(page);
-  const unsub = store.onExternalChange(() => draw());
+  const unsubStore = store.onExternalChange(() => draw());
+  const onSync = () => draw();
+  addEventListener('kreidebox:synced', onSync); addEventListener('kreidebox:sync', onSync);
+  const unsub = () => { unsubStore(); removeEventListener('kreidebox:synced', onSync); removeEventListener('kreidebox:sync', onSync); };
   let filter = 'all'; // 'all' | 'none' | folderId
   await loadThemes();
   await draw();
@@ -153,6 +157,14 @@ export async function renderDashboard(root) {
       h('span', { class: 'storage__item' }, iconEl(ageDays <= BACKUP_WARN_DAYS ? 'check' : 'triangle-alert'),
         h('span', null, 'Letzte Sicherung: ', h('strong', null, s.lastBackupAt ? relativeTime(s.lastBackupAt) : 'noch keine'))),
       h('button', { class: 'btn btn--sm ' + (stale ? 'btn--primary' : 'btn--secondary'), type: 'button', onClick: backupAll, disabled: deckCount === 0 }, 'Alles sichern'));
+    const sync = getSyncStatus();
+    if (sync.available) {
+      const text = sync.email
+        ? h('span', null, 'Konto: ', h('strong', null, sync.email), sync.state === 'syncing' ? ' · gleicht ab …' : sync.state === 'error' ? ` · Abgleich fehlgeschlagen (${sync.error})` : sync.at ? ` · abgeglichen ${relativeTime(sync.at)}` : '')
+        : h('span', null, h('a', { href: '../konto.html' }, 'Mit Konto anmelden'), ' für mehrere Geräte und Claude/ChatGPT');
+      row.append(h('span', { class: 'storage__item' }, iconEl(sync.email ? (sync.state === 'error' ? 'triangle-alert' : 'check') : 'users'), text,
+        sync.email ? h('a', { class: 'btn btn--secondary btn--sm', href: '../konto.html' }, 'Konto') : null));
+    }
     if (!s.persisted && deckCount > 0) {
       row.append(h('span', { class: 'storage__item storage__note' }, iconEl('info'),
         h('span', null, 'Dieser Browser darf die Daten bei Platzmangel löschen. Sichere regelmässig als Datei, z. B. in Google Drive.')));

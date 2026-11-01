@@ -50,6 +50,7 @@ export async function saveDeck(deck) {
   deck.updatedAt = now();
   await put('decks', deck);
   announce({ type: 'deck', id: deck.id, updatedAt: deck.updatedAt });
+  dispatchEvent(new Event('kreidebox:saved'));
   return deck.updatedAt;
 }
 
@@ -92,6 +93,7 @@ export async function deleteDeck(id) {
   deck.deletedAt = now();
   await put('decks', deck);
   announce({ type: 'deck', id });
+  dispatchEvent(new Event('kreidebox:saved'));
 }
 
 export async function restoreDeck(id) {

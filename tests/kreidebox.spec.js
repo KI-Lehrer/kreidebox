@@ -8,7 +8,8 @@ const FILE_URL = 'file://' + resolve(dirname(fileURLToPath(import.meta.url)), '.
 function watchErrors(page) {
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+  // Auf Servern ohne Konto-Schnittstelle (statisch) meldet der Browser die Suche nach /api/health als 404; das ist erwartet.
+  page.on('console', (m) => { if (m.type() === 'error' && !m.location().url.includes('/api/health')) errors.push('console: ' + m.text()); });
   return errors;
 }
 

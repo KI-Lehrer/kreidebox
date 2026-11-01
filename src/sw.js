@@ -11,7 +11,9 @@ self.addEventListener('activate', (e) => {
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  // Nur Dateien der App selbst (im Bereich des Service Workers). Schnittstelle, Anmeldung und Konto gehen immer direkt zum Server.
+  if (req.method !== 'GET' || url.origin !== location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => hit || fetch(req).then((res) => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }

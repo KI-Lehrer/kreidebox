@@ -93,7 +93,8 @@ function buildWidget(spec, ctx, notes, where) {
   }
   x = Math.round(clamp(x, 0, SW - w)); y = Math.round(clamp(y, 0, SH - h));
   const themeId = THEME_KEYS.has(spec.theme) ? spec.theme : (base.themeId || 'standard');
-  return { id: uid(), type, x, y, w, h, rotation: 0, z: ++ctx.z, locked: false, groupId: null, ...base, themeId };
+  const id = typeof spec.id === 'string' && /^[A-Za-z0-9_-]{8,64}$/.test(spec.id) ? spec.id : uid();
+  return { id, type, x, y, w, h, rotation: 0, z: ++ctx.z, locked: false, groupId: null, ...base, themeId };
 }
 
 // Gibt { deck, notes } zurück. Wirft einen Error mit verständlichem Text bei Unbrauchbarem.

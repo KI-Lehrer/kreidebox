@@ -1,5 +1,5 @@
 // Offline-Cache für Kreidebox. Die App ist eine Datei (index.html); Version bei jedem Build neu.
-const CACHE = 'kreidebox-mvy0f7tm';
+const CACHE = 'kreidebox-mvy23x5c';
 const FILES = ['./', './index.html', './datenschutz.html', './manifest.webmanifest',
   './icons/favicon.svg', './icons/favicon-32.png', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
@@ -11,7 +11,9 @@ self.addEventListener('activate', (e) => {
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  // Nur Dateien der App selbst (im Bereich des Service Workers). Schnittstelle, Anmeldung und Konto gehen immer direkt zum Server.
+  if (req.method !== 'GET' || url.origin !== location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => hit || fetch(req).then((res) => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }

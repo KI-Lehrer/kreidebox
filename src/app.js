@@ -5,6 +5,7 @@ import { renderDeck } from './views/deck.js';
 import { renderLists } from './views/lists.js';
 import { renderTemplates } from './views/templates.js';
 import { renderAiLink } from './views/ai.js';
+import { initSync } from './data/sync.js';
 import { applyAppearance } from './views/nav.js';
 
 applyAppearance();
@@ -32,7 +33,7 @@ function route() {
 }
 
 addEventListener('hashchange', route);
-store.init().then(route, (err) => {
+store.init().then(() => { route(); initSync(); }, (err) => {
   root.replaceChildren(h('div', { class: 'empty' }, h('h3', null, 'Speicher nicht verfügbar'),
     h('p', null, 'Dieser Browser erlaubt hier kein Speichern (z. B. privates Fenster). ' + (err && err.message ? err.message : ''))));
 });

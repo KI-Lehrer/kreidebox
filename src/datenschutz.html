@@ -20,14 +20,26 @@
 <main>
   <p><a href="./">← Zurück zu Kreidebox</a></p>
   <h1>Datenschutz</h1>
-  <p>Kurz gesagt: Kreidebox speichert alles nur in deinem Browser. Es gibt kein Konto, keine Cookies, keine Statistik und keinen Server, der deine Daten bekommt.</p>
+  <p>Kurz gesagt: Ohne Konto bleibt alles in deinem Browser. Mit einem (freiwilligen) Konto liegen deine Bildschirme zusätzlich auf einem Server, aber nie die Namen von Kindern.</p>
 
-  <h2>Was gespeichert wird</h2>
+  <h2>Ohne Konto</h2>
   <ul>
     <li>Deine Decks, Bildschirme, Namenslisten, Bilder und Einstellungen liegen im Speicher deines Browsers (IndexedDB und localStorage) auf diesem Gerät.</li>
-    <li>Schülernamen verlassen dein Gerät nicht. Sie werden nirgends hingesendet.</li>
+    <li>Es gibt keine Cookies und keine Statistik. Die Namen von Kindern werden nirgends hingesendet.</li>
     <li>Löschst du die Browserdaten, sind auch die Decks weg. Mit «Alles sichern» legst du eine Datei an, die nur du in der Hand hast.</li>
   </ul>
+
+  <h2>Mit Konto</h2>
+  <ul>
+    <li><strong>Was gespeichert wird:</strong> deine E-Mail-Adresse, ein Name, dein Passwort (nur als Prüfwert, nicht lesbar), Anmelde-Sitzungen (Zeit, Browser-Angabe, IP-Adresse) sowie deine Bildschirme (Aufbau, Widgets, Einstellungen).</li>
+    <li><strong>Was nie gespeichert wird:</strong> Namen von Kindern (Zufall, Gruppen und eigene Namenslisten bleiben auf deinem Gerät), hochgeladene Bilder und Dateien.</li>
+    <li><strong>Cookie:</strong> ein technisch notwendiges Anmelde-Cookie. Es gibt keine Werbe- oder Statistik-Cookies.</li>
+    <li><strong>Löschen:</strong> Unter «Konto» kannst du dein Konto löschen. Dann werden das Konto und alle Bildschirme auf dem Server entfernt. Auf deinen Geräten bleiben die Bildschirme.</li>
+    <li><strong>Anbieter:</strong> Hosting bei Vercel Inc. und Datenbank bei Neon (Postgres). <span class="note">[Region der Datenbank eintragen, sobald sie gewählt ist; Angaben prüfen.]</span> E-Mails zum Zurücksetzen des Passworts verschickt, falls eingerichtet, Resend.</li>
+  </ul>
+
+  <h2>Verbindung mit Claude oder ChatGPT</h2>
+  <p>Nur wenn du Kreidebox dort als Konnektor einrichtest, kann die KI deine Bildschirme (ohne Namen von Kindern) lesen und neue anlegen oder ändern. Die Inhalte, die die KI liest, verarbeitet dann deren Anbieter (Anthropic bzw. OpenAI) nach seinen Bedingungen. Du kannst die Verbindung jederzeit in Claude oder ChatGPT trennen. Gib der KI keine Namen von Kindern.</p>
 
   <h2>Kamera und Mikrofon</h2>
   <p>Das Webcam- und das Lautstärke-Widget fragen vorher um Erlaubnis. Bild und Ton werden nur im Browser angezeigt oder gemessen und nicht aufgenommen oder gesendet.</p>
@@ -36,7 +48,7 @@
   <p>Nur wenn du ein Video- oder Einbetten-Widget benutzt, lädt dein Browser Inhalte von der gewählten Seite (bei Videos von youtube-nocookie.com). Diese Seite sieht dann deine IP-Adresse; es gelten ihre Bestimmungen. Ohne diese Widgets findet keine solche Verbindung statt.</p>
 
   <h2>Hosting</h2>
-  <p>Die App wird als statische Datei ausgeliefert. Der Hosting-Anbieter kann beim Abruf technisch bedingt IP-Adresse und Zeit in Serverprotokollen sehen. <span class="note">[Anbieter und Standort eintragen, sobald das Hosting feststeht.]</span></p>
+  <p>Der Hosting-Anbieter kann beim Abruf technisch bedingt IP-Adresse und Zeit in Serverprotokollen sehen.</p>
 
   <h2>Schriften und Symbole</h2>
   <p>Alle Schriften und Symbole sind in der App enthalten und werden nicht von aussen geladen.</p>

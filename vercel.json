@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": ".",
+  "buildCommand": "node scripts/migrate.mjs",
+  "functions": { "api/mcp.js": { "includeFiles": "ki-format.md" } },
+  "rewrites": [
+    { "source": "/.well-known/oauth-authorization-server", "destination": "/api/well-known/authorization-server" },
+    { "source": "/.well-known/oauth-authorization-server/:path*", "destination": "/api/well-known/authorization-server" },
+    { "source": "/.well-known/oauth-protected-resource", "destination": "/api/well-known/protected-resource" },
+    { "source": "/.well-known/oauth-protected-resource/:path*", "destination": "/api/well-known/protected-resource" }
+  ],
+  "headers": [
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "same-origin" },
+      { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+    ] },
+    { "source": "/dist/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }, { "key": "Service-Worker-Allowed", "value": "/dist/" }] }
+  ]
+}

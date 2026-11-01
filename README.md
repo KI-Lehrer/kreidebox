@@ -16,6 +16,19 @@ Bildschirme für den Unterricht: Timer, Zufallsname, Gruppen, Ampel und rund 20 
 
 Beide schreiben dir Bildschirme als Text (Format: [ki-format.md](ki-format.md)); du fügst ihn im Dashboard über «Von KI einfügen» ein, siehst eine Vorschau und legst ihn mit einem Klick als neues Deck an. Einrichten und Anleitung zum Kopieren: [ki.html](https://ki-lehrer.github.io/kreidebox/ki.html). Es gibt keine Live-Verbindung zu deinen Decks, denn diese liegen nur in deinem Browser.
 
+## Konto, Server und KI-Anschluss (Vercel + Neon)
+
+Kreidebox funktioniert ohne Server. Zusätzlich gibt es einen freiwilligen Server-Teil in `api/`: Konto mit E-Mail und Passwort ([Better Auth](https://www.better-auth.com/)), Abgleich der Decks zwischen Geräten und ein MCP-Server (`/api/mcp`), mit dem Claude und ChatGPT Decks lesen und erstellen. Namen von Kindern werden nie gespeichert (`api/_lib/privacy.js`).
+
+Einrichten (einmalig, in dieser Reihenfolge):
+1. Auf [vercel.com](https://vercel.com) → **Add New → Project** → das GitHub-Repo `kreidebox` importieren. Framework «Other»; die Einstellungen aus `vercel.json` gelten automatisch.
+2. Im Projekt → **Storage → Create Database → Neon** (Marketplace), mit dem Projekt verbinden. Das setzt `DATABASE_URL` selbst.
+3. Im Projekt → **Settings → Environment Variables**: `BETTER_AUTH_SECRET` setzen (Wert mit `openssl rand -base64 32` erzeugen). Für «Passwort vergessen» zusätzlich `RESEND_API_KEY` und `MAIL_FROM` (siehe `.env.example`).
+4. **Deployments → Redeploy**. Der Build legt die Tabellen an (`scripts/migrate.mjs`).
+5. `https://<deine-adresse>/ki.html` zeigt die Adresse des Konnektors für Claude und ChatGPT.
+
+Lokal testen (braucht eine Postgres-Datenbank): `TEST_DATABASE_URL=postgres://… npx playwright test`. Der Test-Server startet selbst auf Port 3111.
+
 ## Entwickeln
 
 ```bash
@@ -31,6 +44,8 @@ Veröffentlicht wird über GitHub Pages aus dem Branch `main` (Hauptordner). `di
 | --- | --- |
 | `index.html` | Startseite (Landing), verlinkt auf `dist/index.html` |
 | `src/` | Quellcode: `app.js` (Router), `views/`, `widgets/`, `data/` (Speicher), `ui/`, `styles/`, `icons/` |
+| `api/` | Server (Vercel Functions): `auth`, `decks`, `mcp`, `_lib` |
+| `konto.html`, `db/`, `scripts/` | Anmeldeseite, Datenbankschema, Migration und lokaler Entwicklungs-Server |
 | `ki-format.md`, `ki.html` | Anleitung und Format für Claude und ChatGPT; Prüfer in `src/data/aispec.js` |
 | `src/design.html` | Prüfseite des Design-Systems |
 | `dist/` | gebaute App: `index.html` (gehostet, installierbar), `kreidebox.html` (Einzeldatei) |

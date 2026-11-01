@@ -38,11 +38,27 @@
   <h2>3. In Kreidebox einfügen</h2>
   <p>Im <a href="dist/index.html">Dashboard</a> auf <strong>«Von KI einfügen»</strong> klicken, den Text einfügen, <strong>«Prüfen»</strong>, dann <strong>«Anlegen»</strong>. Du kannst den Text auch als Datei mit der Endung <code>.kreidebox.json</code> speichern und mit «Importieren» laden.</p>
 
+  <h2>Direkter Zugriff mit Konto (Claude und ChatGPT)</h2>
+  <p id="mcp-off">Dieser Weg braucht den Kreidebox-Server. Auf dieser Adresse ist er nicht eingerichtet.</p>
+  <div id="mcp-on" hidden>
+    <p>Mit einem Konto können Claude und ChatGPT deine Bildschirme lesen, neue anlegen und ändern. Namen von Kindern bleiben auf deinem Gerät und sind für die KI nie sichtbar.</p>
+    <ol>
+      <li><a href="konto.html">Konto erstellen</a> und in Kreidebox mit demselben Konto anmelden. Deine Bildschirme werden abgeglichen.</li>
+      <li>Adresse des Konnektors: <code id="mcp-url"></code> <button type="button" id="copy-url">Kopieren</button></li>
+      <li><strong>Claude:</strong> Einstellungen → Konnektoren → Eigenen Konnektor hinzufügen → Adresse einfügen → mit deinem Kreidebox-Konto anmelden.</li>
+      <li><strong>ChatGPT:</strong> Einstellungen → Apps/Konnektoren → Entwicklermodus einschalten → neuen Konnektor mit dieser Adresse hinzufügen → mit deinem Kreidebox-Konto anmelden.</li>
+    </ol>
+    <p>Welche Tarife das erlauben, ändert sich; prüfe es in den Einstellungen beider Dienste. Nach der Anmeldung sagst du zum Beispiel: «Mach in Kreidebox ein Deck für Montag mit Start-Bildschirm und Stillarbeit.» Das Deck erscheint, sobald du Kreidebox öffnest.</p>
+  </div>
+
   <h2>Sicherheit</h2>
   <p>Es wird immer zuerst eine Vorschau gezeigt, nichts wird ohne deinen Klick gespeichert, und es gibt keine Verbindung zu deinen bestehenden Decks. Der Text wird nur in deinem Browser gelesen, nicht an einen Server gesendet. Bilder, PDFs und Einbetten werden aus Text nicht erstellt. Gib der KI keine echten Schülernamen, wenn du ihren Datenschutz nicht geprüft hast.</p>
 </main>
 <script>
 fetch('ki-format.md').then((r) => r.text()).then((t) => { document.getElementById('doc').textContent = t; }).catch(() => { document.getElementById('doc').textContent = 'Konnte nicht geladen werden. Datei: ki-format.md im Repository.'; });
+fetch('/api/health').then((r) => r.ok && r.json()).then((j) => { if (!j || !j.ok) return; document.getElementById('mcp-off').hidden = true; document.getElementById('mcp-on').hidden = false;
+  const u = location.origin + '/api/mcp'; document.getElementById('mcp-url').textContent = u;
+  document.getElementById('copy-url').addEventListener('click', () => navigator.clipboard.writeText(u).catch(() => {})); }).catch(() => {});
 document.getElementById('copy').addEventListener('click', async () => {
   const msg = document.getElementById('msg');
   try { await navigator.clipboard.writeText(document.getElementById('doc').textContent); msg.textContent = 'Kopiert.'; } catch { msg.textContent = 'Nicht möglich. Markiere den Text unten von Hand.'; }
