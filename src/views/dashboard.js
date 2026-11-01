@@ -6,6 +6,7 @@ import { toast, promptDialog, confirmDialog, showMenu } from '../ui/overlays.js'
 import { listFolders, createFolder, renameFolder, deleteFolder, moveDeckToFolder, loadThemes } from '../data/library.js';
 import { topNav, themeToggle } from './nav.js';
 import { thumbOf } from './templates.js';
+import { pasteAiDialog } from './ai.js';
 
 const BACKUP_WARN_DAYS = 7;
 
@@ -33,6 +34,7 @@ export async function renderDashboard(root) {
         h('div', { class: 'dash__actions' },
           themeToggle(),
           h('button', { class: 'btn btn--secondary btn--lg', type: 'button', onClick: doImport }, iconEl('chevron-down', { size: 20 }), 'Importieren'),
+          h('button', { class: 'btn btn--secondary btn--lg', type: 'button', onClick: async () => { const d = await pasteAiDialog(); if (d) location.hash = `#/deck/${d.id}/1`; } }, iconEl('wand-sparkles', { size: 20 }), h('span', null, 'Von KI einfügen')),
           h('button', { class: 'btn btn--primary btn--lg', type: 'button', onClick: newDeck }, iconEl('plus', { size: 20 }), 'Neues Deck'))),
       storageRow(status, allDecks.length),
       allDecks.length || folders.length ? folderBar(folders, allDecks) : null,

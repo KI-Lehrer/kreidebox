@@ -3,6 +3,7 @@ import { get, getAll, put } from './db.js';
 import { uid, getDeck, saveDeck, SCHEMA_VERSION, setLastBackupAt } from './store.js';
 import { getUpload, putUploadRecord } from './uploads.js';
 import { getNameList } from './namelists.js';
+import { looksLikeAiSpec, deckFromAiSpec } from './aispec.js';
 
 export const FORMAT = 'kreidebox-export';
 const LEGACY_FORMATS = ['nachbau-export'];
@@ -121,6 +122,7 @@ export async function exportScreens(deckId, screenIds, { includeNameLists = true
 export async function readFile(file) {
   let data;
   try { data = JSON.parse(await file.text()); } catch { throw new Error('Die Datei ist keine gültige Sicherung.'); }
+  if (looksLikeAiSpec(data)) { const { deck } = deckFromAiSpec(data); return { format: FORMAT, version: SCHEMA_VERSION, kind: 'decks', decks: [deck], nameLists: [], uploads: [], themes: [], folders: [], templates: [] }; }
   if (!data || (data.format !== FORMAT && !LEGACY_FORMATS.includes(data.format))) throw new Error('Die Datei stammt nicht aus dieser App.');
   if (data.version > SCHEMA_VERSION) throw new Error('Die Datei stammt aus einer neueren Version. Bitte die App aktualisieren.');
   return data;

@@ -12,6 +12,10 @@ Bildschirme für den Unterricht: Timer, Zufallsname, Gruppen, Ampel und rund 20 
 - **Ohne Internet von Anfang an:** `dist/kreidebox.html` herunterladen und öffnen. Diese Einzeldatei hat keinen Offline-Cache und keine Installation, und manche Browser (v. a. Safari) behandeln per Doppelklick geöffnete Dateien als wechselnden Ort, dann können gespeicherte Daten «verschwinden». Für den Schulalltag die gehostete Version nehmen.
 - Datenschutz: siehe [Datenschutzseite](https://ki-lehrer.github.io/kreidebox/dist/datenschutz.html).
 
+## Mit Claude und ChatGPT
+
+Beide schreiben dir Bildschirme als Text (Format: [ki-format.md](ki-format.md)); du fügst ihn im Dashboard über «Von KI einfügen» ein, siehst eine Vorschau und legst ihn mit einem Klick als neues Deck an. Einrichten und Anleitung zum Kopieren: [ki.html](https://ki-lehrer.github.io/kreidebox/ki.html). Es gibt keine Live-Verbindung zu deinen Decks, denn diese liegen nur in deinem Browser.
+
 ## Entwickeln
 
 ```bash
@@ -27,6 +31,7 @@ Veröffentlicht wird über GitHub Pages aus dem Branch `main` (Hauptordner). `di
 | --- | --- |
 | `index.html` | Startseite (Landing), verlinkt auf `dist/index.html` |
 | `src/` | Quellcode: `app.js` (Router), `views/`, `widgets/`, `data/` (Speicher), `ui/`, `styles/`, `icons/` |
+| `ki-format.md`, `ki.html` | Anleitung und Format für Claude und ChatGPT; Prüfer in `src/data/aispec.js` |
 | `src/design.html` | Prüfseite des Design-Systems |
 | `dist/` | gebaute App: `index.html` (gehostet, installierbar), `kreidebox.html` (Einzeldatei) |
 | `tests/` | Playwright-Tests |

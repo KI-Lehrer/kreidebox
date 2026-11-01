@@ -4,6 +4,7 @@ import { renderDashboard } from './views/dashboard.js';
 import { renderDeck } from './views/deck.js';
 import { renderLists } from './views/lists.js';
 import { renderTemplates } from './views/templates.js';
+import { renderAiLink } from './views/ai.js';
 import { applyAppearance } from './views/nav.js';
 
 applyAppearance();
@@ -20,8 +21,9 @@ function route() {
     const m = location.hash.match(/^#\/deck\/([\w-]+)(?:\/(\d+))?/);
     const l = location.hash.match(/^#\/listen(?:\/([\w-]+))?/);
     const t = /^#\/vorlagen/.test(location.hash);
+    const ki = /^#\/ki(?:\?|$)/.test(location.hash);
     document.body.classList.toggle('is-deck', !!m);
-    cleanup = m ? await renderDeck(root, m[1], Number(m[2] || 1) - 1) : l ? await renderLists(root, l[1]) : t ? await renderTemplates(root) : await renderDashboard(root);
+    cleanup = ki ? await renderAiLink(root) : m ? await renderDeck(root, m[1], Number(m[2] || 1) - 1) : l ? await renderLists(root, l[1]) : t ? await renderTemplates(root) : await renderDashboard(root);
   }).catch((err) => {
     console.error(err);
     root.replaceChildren(h('div', { class: 'empty' }, h('h3', null, 'Etwas ist schiefgelaufen'), h('p', null, String(err && err.message || err)),

@@ -577,3 +577,4 @@ body:not(.is-deck) .toast-host { bottom: var(--s-6); }
 .fbar__pop[hidden] { display: none; }
 .fbar__swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--c-surface); box-shadow: 0 0 0 1px var(--c-border-input, #C9CDD6); cursor: pointer; }
 .fbar__swatch:hover { transform: scale(1.12); } .fbar__swatch:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
+.ai__list { padding-left: 1.2em; margin: var(--s-3) 0; } .ai__list li { margin: 4px 0; }

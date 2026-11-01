@@ -52,6 +52,7 @@ test('Dashboard: axe WCAG 2.2 AA, hell und dunkel', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Meine Bildschirme' })).toBeVisible();
   for (const scheme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme: scheme });
+    await page.waitForTimeout(500); // Farbübergänge der Knöpfe abwarten
     const res = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag22aa']).analyze();
     expect(res.violations.map((v) => v.id + ' ' + v.nodes.length), scheme).toEqual([]);
   }
@@ -87,3 +88,81 @@ test('Einzeldatei (file://) läuft ohne Fehler und speichert', async ({ page }) 
   await expect(page).toHaveURL(/#\/deck\//);
   expect(errors).toEqual([]);
 });
+
+// ---------- KI-Format (Claude / ChatGPT) ----------
+import { readFileSync } from 'node:fs';
+const DOC = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../ki-format.md'), 'utf8');
+
+async function pasteAndCreate(page, text) {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Von KI einfügen' }).click();
+  await page.getByLabel(/Text oder Link/).fill(text);
+  await page.getByRole('button', { name: 'Prüfen' }).click();
+  await expect(page.getByRole('dialog').getByText('Aus KI übernehmen')).toBeVisible();
+  return page.getByRole('dialog').getByRole('button', { name: 'Anlegen' });
+}
+
+test('KI: Beispiel aus der Anleitung wird eingefügt, geprüft und angelegt', async ({ page }) => {
+  const errors = watchErrors(page);
+  const example = DOC.match(/```json\n([\s\S]*?)```/)[1];
+  const create = await pasteAndCreate(page, '```json\n' + example + '\n```');
+  await expect(page.getByRole('dialog')).toContainText('Stillarbeit Mathe');
+  await expect(page.getByRole('dialog')).toContainText('Text, Arbeitsform, Timer, Ampel');
+  await create.click();
+  await expect(page).toHaveURL(/#\/deck\//);
+  await expect(page.locator('.stage')).toContainText('Aufgabe 3 bis 6 im Mathebuch');
+  expect(errors).toEqual([]);
+});
+
+test('KI: Abbrechen legt nichts an', async ({ page }) => {
+  await pasteAndCreate(page, JSON.stringify({ kreidebox: 1, name: 'Nur Test', screens: [{ widgets: [{ type: 'clock' }] }] }));
+  await page.getByRole('button', { name: 'Abbrechen' }).click();
+  await expect(page.getByRole('heading', { name: 'Hier liegt noch nichts' }).or(page.getByText('Nur Test'))).toBeVisible();
+  await expect(page.getByText('Nur Test')).toHaveCount(0);
+});
+
+test('KI: Link (#/ki?d=…) zeigt Vorschau und legt erst nach Klick an', async ({ page }) => {
+  const spec = { kreidebox: 1, name: 'Per Link', screens: [{ name: 'A', widgets: [{ type: 'timer', minutes: 3 }, { type: 'randomizer', names: ['Anna', 'Ben'] }] }] };
+  await page.goto('/#/ki?d=' + Buffer.from(JSON.stringify(spec)).toString('base64url'));
+  await expect(page.getByRole('dialog')).toContainText('Per Link');
+  await page.getByRole('dialog').getByRole('button', { name: 'Anlegen' }).click();
+  await expect(page).toHaveURL(/#\/deck\//);
+  await expect(page.locator('.stage')).toContainText('0 von 2 gezogen');
+});
+
+test('KI: kaputter Link zeigt eine Meldung, keinen Absturz', async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.goto('/#/ki?d=AAAA');
+  await expect(page.getByText('Der Link konnte nicht gelesen werden')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('KI: Sicherheit – Skript-Text bleibt Text, javascript:-Adresse und Bild/Einbetten werden entfernt', async ({ page }) => {
+  let alerted = false;
+  page.on('dialog', (d) => { if (d.type() === 'alert') alerted = true; d.dismiss(); });
+  const spec = { kreidebox: 1, name: 'Böse', screens: [{ widgets: [
+    { type: 'text', text: '<img src=x onerror=alert(1)>', state: { html: '<img src=x onerror=alert(2)>' } },
+    { type: 'hyperlink', url: 'javascript:alert(3)', label: 'Klick' },
+    { type: 'image' }, { type: 'embed', settings: { code: '<iframe src="https://example.com"></iframe>' } },
+    { type: 'trafficlight', settings: { __proto__: { polluted: 1 }, constructor: 1 } },
+  ] }] };
+  const create = await pasteAndCreate(page, JSON.stringify(spec));
+  await expect(page.getByRole('dialog')).toContainText('Text, Link, Ampel');
+  await create.click();
+  await expect(page).toHaveURL(/#\/deck\//);
+  await expect(page.locator('.stage img[src="x"]')).toHaveCount(0);
+  await expect(page.locator('.stage')).toContainText('<img src=x onerror=alert(1)>');
+  await expect(page.locator('.stage iframe')).toHaveCount(0);
+  const href = await page.locator('.stage a').first().getAttribute('href').catch(() => null);
+  expect(href || '').not.toMatch(/javascript:/i);
+  expect(await page.evaluate(() => ({}).polluted)).toBeUndefined();
+  expect(alerted).toBe(false);
+});
+
+test('KI: .kreidebox.json-Datei im KI-Format lässt sich importieren', async ({ page }) => {
+  await page.goto('/');
+  const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.getByRole('button', { name: 'Importieren', exact: true }).click()]);
+  await chooser.setFiles({ name: 'ki.kreidebox.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ kreidebox: 1, name: 'Aus Datei', screens: [{ widgets: [{ type: 'dice' }] }] })) });
+  await expect(page.getByText('Aus Datei')).toBeVisible();
+});
+
