@@ -1,6 +1,6 @@
 // Builds dist/kreidebox.html: one self-contained file (JS, CSS, fonts inlined). Run: node build.mjs
 import { build } from 'esbuild';
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync, cpSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 const src = 'src';
@@ -31,5 +31,6 @@ writeFileSync('dist/index.html', html.replace('</body>', register).replace(/<!--
 const stamp = Date.now().toString(36);
 writeFileSync('dist/sw.js', readFileSync(join(src, 'sw.js'), 'utf8').replace("__BUILD__", stamp));
 for (const f of ['manifest.webmanifest', 'datenschutz.html']) copyFileSync(join(src, f), join('dist', f));
+cpSync(join(src, 'bg'), 'dist/bg', { recursive: true });
 for (const f of readdirSync(join(src, 'icons'))) copyFileSync(join(src, 'icons', f), join('dist/icons', f));
 console.log(`dist/kreidebox.html + dist/index.html ${(html.length / 1024).toFixed(0)} KB (Build ${stamp})`);

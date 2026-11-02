@@ -4,6 +4,7 @@ import { h, iconEl, iconButton, isTyping, modKey } from '../ui/dom.js';
 import { toast, confirmDialog, promptDialog, showMenu, closeMenu, openPanel, closePanel, panelOpenFor, section } from '../ui/overlays.js';
 import { WIDGETS, BAR, MORE, isBuilt } from '../widgets/registry.js';
 import { advance } from '../widgets/timer.js';
+import { BG_IMAGES, bgThumbUrl, bgImagesAvailable } from '../bg-images.js';
 import { BACKGROUNDS, backgroundCss, resolveBackground, sameBackground, SLIDE_INTERVALS, slideIndex } from '../backgrounds.js';
 import { applyWidgetTheme } from '../widgets/themes.js';
 import { loadThemes, saveTemplate, listTemplates, screenFromTemplate } from '../data/library.js';
@@ -722,7 +723,15 @@ export async function renderDeck(root, deckId, screenIndex = 0) {
         h('span', { class: 'bg-tile__swatch', style: { background: backgroundCss(bg) } }), h('span', null, bg.label));
         grid.append(b);
       }
+      const photoSections = !bgImagesAvailable() ? [] : [h('div', { class: 'field' }, ...BG_IMAGES.map((grp) => h('div', { class: 'field' }, h('h4', { class: 'field__label' }, grp.title),
+        h('div', { class: 'bg-grid', role: 'radiogroup', 'aria-label': grp.title }, ...grp.items.map((it) => {
+          const b = h('button', { class: 'bg-tile', type: 'button', role: 'radio', title: it.label, 'aria-checked': String(screen().background.type === 'image' && screen().background.value === it.path),
+            onClick: () => { screen().background = { type: 'image', value: it.path }; applyBackground(); body.querySelectorAll('[role=radio]').forEach((x) => x.setAttribute('aria-checked', String(x === b))); changed(); } },
+          h('span', { class: 'bg-tile__swatch', style: { background: `center / cover no-repeat url("${bgThumbUrl(it.path)}"), #E9ECF0` } }), h('span', null, it.label));
+          return b;
+        })))), h('p', { class: 'field__hint' }, h('a', { href: 'bg/quellen.txt', target: '_blank', rel: 'noopener' }, 'Bildnachweise und Lizenzen')))];
       body.append(section('Farbe oder Verlauf', grid),
+        ...(photoSections.length ? [section('Bilder', ...photoSections)] : []),
         section(null, h('button', { class: 'btn btn--secondary', type: 'button', onClick: () => {
           deck.screens.forEach((s) => { s.background = JSON.parse(JSON.stringify(screen().background)); });
           changed(); toast('Hintergrund für alle Bildschirme übernommen');

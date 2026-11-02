@@ -1,5 +1,6 @@
 // Own background presets (no images from the original) + uploaded images.
 import { getUploadUrl } from './data/uploads.js';
+import { bgImageUrl } from './bg-images.js';
 
 export const BACKGROUNDS = [
   { label: 'Morgen', type: 'gradient', value: ['#CFE0F0', '#F3E3CF'] },
@@ -23,6 +24,7 @@ export function backgroundCss(bg) {
   if (!bg) return FALLBACK;
   if (bg.type === 'color') return bg.value;
   if (bg.type === 'gradient') return `linear-gradient(135deg, ${bg.value[0]}, ${bg.value[1]})`;
+  if (bg.type === 'image' && /^[a-z]+\/[\w.-]+\.jpg$/.test(bg.value)) return `center / cover no-repeat url("${bgImageUrl(bg.value)}"), ${FALLBACK}`;
   return FALLBACK;
 }
 

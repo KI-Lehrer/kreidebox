@@ -1,5 +1,5 @@
 // Offline-Cache für Kreidebox. Die App ist eine Datei (index.html); Version bei jedem Build neu.
-const CACHE = 'kreidebox-mvy7o51t';
+const CACHE = 'kreidebox-mvzfw8mx';
 const FILES = ['./', './index.html', './datenschutz.html', './manifest.webmanifest',
   './icons/favicon.svg', './icons/favicon-32.png', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
