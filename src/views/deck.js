@@ -723,7 +723,7 @@ export async function renderDeck(root, deckId, screenIndex = 0) {
         h('span', { class: 'bg-tile__swatch', style: { background: backgroundCss(bg) } }), h('span', null, bg.label));
         grid.append(b);
       }
-      const photoSections = !bgImagesAvailable() ? [] : [h('div', { class: 'field' }, ...BG_IMAGES.map((grp) => h('div', { class: 'field' }, h('h4', { class: 'field__label' }, grp.title),
+      const photoSections = !bgImagesAvailable() ? [h('p', { class: 'field__hint' }, 'Die mitgelieferten Bilder gibt es nur in der gehosteten Version (index.html über http/https), nicht in der Einzeldatei zum Doppelklicken.')] : [h('div', { class: 'field' }, ...BG_IMAGES.map((grp) => h('div', { class: 'field' }, h('h4', { class: 'field__label' }, grp.title),
         h('div', { class: 'bg-grid', role: 'radiogroup', 'aria-label': grp.title }, ...grp.items.map((it) => {
           const b = h('button', { class: 'bg-tile', type: 'button', role: 'radio', title: it.label, 'aria-checked': String(screen().background.type === 'image' && screen().background.value === it.path),
             onClick: () => { screen().background = { type: 'image', value: it.path }; applyBackground(); body.querySelectorAll('[role=radio]').forEach((x) => x.setAttribute('aria-checked', String(x === b))); changed(); } },
@@ -731,7 +731,7 @@ export async function renderDeck(root, deckId, screenIndex = 0) {
           return b;
         })))), h('p', { class: 'field__hint' }, h('a', { href: 'bg/quellen.txt', target: '_blank', rel: 'noopener' }, 'Bildnachweise und Lizenzen')))];
       body.append(section('Farbe oder Verlauf', grid),
-        ...(photoSections.length ? [section('Bilder', ...photoSections)] : []),
+        section('Bilder', ...photoSections),
         section(null, h('button', { class: 'btn btn--secondary', type: 'button', onClick: () => {
           deck.screens.forEach((s) => { s.background = JSON.parse(JSON.stringify(screen().background)); });
           changed(); toast('Hintergrund für alle Bildschirme übernommen');
